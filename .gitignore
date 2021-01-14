@@ -1,0 +1,20 @@
+venv
+*.csv
+# Mac
+.DS_Store
+# PyCharm
+.metadata/
+.project
+.pydevproject
+*.pyc
+.idea
+*.xml
+.name
+# Jupyter Notebook
+ipynb
+.ipynb_checkpoints
+# Output
+*.png
+# ignored files
+ignore
+
