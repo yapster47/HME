@@ -3,7 +3,7 @@ import os
 import shutil
 import explore_data
 import keep_subset
-l
+
 import numpy as np
 
 import random
@@ -13,30 +13,39 @@ import random
 # Press ⌃R to execute it or replace it with your code.
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
 
-data_labels = pd.read_csv("balanced.csv") # Note that this is the FULL .csv file (all 168K images)
-
-images=list(data_labels['path'])
-#subsample=random.sample(images,10000)
-
-print("Number of images from smaller Latex list: ",len(images) )
-
-os.chdir('../../Downloads/HME_code/hasy/hasyv2')
-
-for f in images:
-    print("File exists:" + str(os.path.exists('hasyv2-data/'+f)))
-    print('hasyv2-data/'+f)
-    if os.path.exists('hasyv2-data/' + f):
-        shutil.copy('hasyv2-data/' + f, "hasyv2-symbol-subset")
-    #print(data_loc+'hasyv2-data/'+f)
-    #shutil.copy(data_loc+'hasyv2-data/'+f, 'hasyv2-symbol-subset')
-
-#print(os.getcwd())
 #os.chdir('../../Downloads/HME_code/hasy/hasyv2')
-#print(os.getcwd())
-print(os.listdir("hasyv2-symbol-subset"))
-#os.mkdir('hasyv2-symbol-subset')
-# Press the green button in the gutter to run the script.
-#if __name__ == '__main__':
-#    print_hi('PyCharm')
+
+def create_balanced(source_dir, csvfile, col, dest_dir):
+    """
+    Takes a dataframe and copies files from source_dir to dest_dir according to the csvfile.
+
+    Args:
+        source_dir: string
+        csvfile: string
+        col: string - name of column containing file names
+        dest_dir: string - where to put the files (make sure this directory exists!)
+
+    Returns:
+        nothing
+    """
+    print("Datapath exists: " + str(os.path.exists(source_dir)))
+    df=pd.read_csv(csvfile)
+    print("Number of files to be copied is: ", df[col].shape)
+    files = list(df[col])
+    for file in files:
+        f= source_dir+file
+        if os.path.exists(f):
+            shutil.copy(f, dest_dir)
+        else:
+            print("f" + "does not exist")
+    print("Files in" + dest_dir + ": \n ", os.listdir(dest_dir))
+    return
+
+balanced_file="balanced.csv"
+data_path='../../Downloads/HME_code/hasy/hasyv2/'
+source= 'hasyv2-data/'
+destination_directory= data_path +'hasyv2-balanced-subset'
+
+create_balanced(data_path+source, balanced_file,'path',  destination_directory)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
