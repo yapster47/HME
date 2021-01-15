@@ -15,37 +15,50 @@ import random
 
 #os.chdir('../../Downloads/HME_code/hasy/hasyv2')
 
-def create_balanced(source_dir, csvfile, col, dest_dir):
-    """
-    Takes a dataframe and copies files from source_dir to dest_dir according to the csvfile.
+# 1.) Decide on labels you want to keep
+# 2.) Explore distribution of data across those labels (ie/check for balance)
+# 3.) Create new .csv file for label subset
+# 4.) If necessary (b/c of space considerations), create new folder of data containing only the
+#     points in data set
 
-    Args:
-        source_dir: string
-        csvfile: string
-        col: string - name of column containing file names
-        dest_dir: string - where to put the files (make sure this directory exists!)
+symbols = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'x',
+           '0', '+', '\\div', '\\sqrt{}', '-', '\\cdot',
+           '\\angle',
+           '\\approx', '\\sim', '\\equiv', '\\neq',
+           '\\int', '\\iint', '\\oint', '\\cdot', '\\leq', '\\geq', '<', '>',
+           '\\subset', '\\supset', '\\subseteq', '\\supseteq', '\\cong',
+           '\\propto', '-', '+', '\\$', '\\{',
+           '\\dots', '\\checkmark', '\\pm', '\\bullet', '\\setminus',
+           '\\circ', '\\star', '\\approx', '\\equiv', '\\not\\equiv',
+           '\\parallel', '\\lor', '\\land',
+           '\\downarrow', '\\rightarrow', '\\leftarrow', '\\neq', '\\neg', '\\infty', '\\prime',
+           '\\angle',
+           '\\triangle', '\\square', '\\sim', '\\doteq', '\\parallel', '\\langle', '\\rangle',
+           'a', 'b', 'c',
+           'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
+           'q', 'r', 's', 'u', 'v', 'w', 'x', 'y', 'z',
+           'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+           'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+           '\\pi', '\\alpha', '\\beta', '\\sum', '\\sigma', '\\Sigma', '\\gamma',
+           '\\Gamma', '\\delta', '\\Delta', '\\zeta', '\\eta', '\\theta',
+           '\\epsilon', '\\iota', '\\kappa',
+           '\\lambda', '\\Lambda', '\\mu', '\\nu', '\\xi',
+           '\\Pi', '\\rho', '\\tau', '\\phi', '\\nabla',
+           '\\chi', '\\psi', '\\omega', '\\Omega']
 
-    Returns:
-        nothing
-    """
-    print("Datapath exists: " + str(os.path.exists(source_dir)))
-    df=pd.read_csv(csvfile)
-    print("Number of files to be copied is: ", df[col].shape)
-    files = list(df[col])
-    for file in files:
-        f= source_dir+file
-        if os.path.exists(f):
-            shutil.copy(f, dest_dir)
-        else:
-            print("f" + "does not exist")
-    print("Files in" + dest_dir + ": \n ", os.listdir(dest_dir))
-    return
+# df is the new dataframe with only the labels you want to keep and kept_lbls is the list
+data_loc = '../../Downloads/HME_code/hasy/hasyv2/'
 
-balanced_file="balanced.csv"
-data_path='../../Downloads/HME_code/hasy/hasyv2/'
-source= 'hasyv2-data/'
-destination_directory= data_path +'hasyv2-balanced-subset'
+csvfile = "hasy-data-labels.csv"  # Note that this is the FULL .csv file (all 168K images)
 
-create_balanced(data_path+source, balanced_file,'path',  destination_directory)
+labels='latex'
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+# get the initial dataframe
+df = explore_data.get_df(data_loc, csvfile)
+# remove directory name from 'path column
+df = explore_data.modify_col_data(df, 'path', 'hasy-data/', '', True)
+# prunt according to the given list of symbols
+pruned_csv, pruned_df, kept_lbls = keep_subset.prune_column(df, 'latex', symbols[0:17], 'pruned.csv')
+# plot distribution of pruned dataset
+keep_subset.check_new_df('./',  pruned_csv, labels, 'path', num_bins=100)
+
