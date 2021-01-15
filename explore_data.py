@@ -51,9 +51,12 @@ def label_counts(df, col_name, points, num_bins, norm=False):
         Series containing value counts for each unique value
         Groupby object with one dataframe per label
     """
-    print("Number of unique labels of the data:",len(df[col_name].unique()))
-    print("The Series of unique labels:",df[col_name].unique())
-    print("The distribution of data points across the labels: ", df[col_name].value_counts(normalize=norm))
+    print("Number of unique labels of the data:\n",len(df[col_name].unique()))
+    print("The Series of unique labels:\n",df[col_name].unique())
+    counts = df[col_name].value_counts(normalize=norm)
+    print("The distribution of data points across the labels:\n ", counts)
+    print("The highest frequency symbols are:\n",counts[counts>2000])
+    print("The lowest frequency symbols are:\n", counts[counts < 60])
     lab_counts=df.groupby(col_name)[points].count()
     lab_counts.plot.hist(bins=num_bins)
     plt.show()
